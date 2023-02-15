@@ -17,7 +17,7 @@ class UsersController < ApplicationController
     # params need to be nested within a user hash
     # key = user[name]  value = 'Alvin'
     def create
-        @user = User.new(params.require(:user).permit(:name, :email))
+        @user = User.new(user_params)
         if @user.save
           render json: @user
         else
@@ -45,6 +45,6 @@ class UsersController < ApplicationController
 
     private
     def user_params
-        params.require(:user).permit(:email, :name)
+        params.require(:user).permit(:username)
     end
 end
