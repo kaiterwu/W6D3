@@ -20,4 +20,6 @@ class Comment < ApplicationRecord
   belongs_to(
     :artwork
   )
+
+  has_many :likes, dependent: :destroy, as: :likeable
 end

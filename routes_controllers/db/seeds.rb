@@ -8,9 +8,11 @@
 ActiveRecord::Base.transaction do 
     User.destroy_all
     Artwork.destroy_all 
-    ArtworkShare.destroy_all 
+    ArtworkShare.destroy_all
+    Comment.destroy_all
+    Like.destroy_all
 
-    %w(users artworks artwork_shares comments).each do |table_name|
+    %w(users artworks artwork_shares comments likes).each do |table_name|
         ApplicationRecord.connection.reset_pk_sequence!(table_name)
     end 
 
@@ -29,4 +31,7 @@ ActiveRecord::Base.transaction do
     c1 = Comment.create!(author: a, artwork: aw1, body: "Go back to art school!")
     c2 = Comment.create!(author: a, artwork: aw2, body: "Your art is 'UnIqUe'")
     c3 = Comment.create!(author: f, artwork: aw3, body: "💩")
+
+    l1 = Like.create!(liker: f, likeable: c3)
+    l1 = Like.create!(liker: k, likeable: aw3)
 end 

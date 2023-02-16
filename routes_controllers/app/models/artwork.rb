@@ -29,6 +29,9 @@ class Artwork < ApplicationRecord
         class_name: :User
     )
     has_many :shared_viewers, through: :artwork_shares, source: :viewer 
+
+    has_many :likes, dependent: :destroy, as: :likeable
+
     # has_many :sharers, through: :artist, source: :artwork_shares 
     # has_many :artworks_for_user_id, through: :sharers, source: :artwork 
 end
