@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  resources :users
+  resources :users, except:[:new, :edit]
+  resources :artworks, except:[:new, :edit]
 
   # get '/users', to: 'users#index'
   # get '/users/:id', to: 'users#show', as: 'user'
