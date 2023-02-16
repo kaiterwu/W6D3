@@ -1,26 +1,13 @@
 class ArtworksController < ApplicationController
   def index
       # render plain: "I'm in the index action!"
-      if params.has_key?(:user_id)
-        owned_artworks = Artwork
-        .joins(:artist)
-        .where("artworks.artist_id = #{params[:user_id]}")
-
-        shared_artworks = Artwork 
-        .joins(:artwork_shares)
-        .where("artwork_shares.viewer_id = #{params[:user_id]}")
-        @all_artworks_for_user_id = owned_artworks + shared_artworks 
-       render json: @all_artworks_for_user_id
-      else
-        render json: 'invalid id', status: :unprocessable_entity
+        if params.has_key?(:user_id)
+        
+            @all_artworks_for_user_id = Artwork.artworks_for_user_id(params[:user_id])
+            render json: @all_artworks_for_user_id
+        else
+            render json: 'invalid id', status: :unprocessable_entity
         end
-
-#     @shared_artworks = Artwork 
-#     .left_joins(:artworks_for_user_id)
-#     .where("artworks.artist_id = #{params[:user_id]}")
-#    render json: @shared_artworks 
-#   else
-#     render json: 'invalid id', status: :unprocessable_entity
   end 
 
   def show 
@@ -60,6 +47,26 @@ class ArtworksController < ApplicationController
           render json: @artwork.errors.full_messages, status: :unprocessable_entity
       end
   end
+
+  def update_favorite
+    if params.has_key?(:user_id) && params.has_key?(:artwork_id)
+        @favorited = Artwork.owned_artworks(params[:user_id]).find_by(id: params[:artwork_id])
+        unless @favorited.nil? 
+            @favorited.update(favorited: true)
+            return render json: 'Favorited my own!'
+        end 
+       @favorited = ArtworkShare 
+        .where('artwork_shares.artwork_id = ? AND artwork_shares.viewer_id = ?',
+            "#{params[:artwork_id]}","#{params[:user_id]}")
+        unless @favorited.empty? 
+            @favorited.update(favorited: true)
+            return render json: 'Favorited my viewed!'
+        end 
+        render json: 'Not found', status: :unprocessable_entity
+    else 
+        render json: 'Not valid', status: :unprocessable_entity
+    end
+end 
 
   private
   def artwork_params

@@ -29,6 +29,8 @@ has_many(
   inverse_of: :author
 )
 
+
+
 has_many :likes, foreign_key: :liker_id, dependent: :destroy, inverse_of: :liker
 
 has_many :shared_artworks, through: :artwork_shares, source: :artwork 

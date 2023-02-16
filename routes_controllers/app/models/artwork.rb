@@ -8,6 +8,7 @@
 #  artist_id  :bigint           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  favorited  :boolean          default(FALSE), not null
 #
 class Artwork < ApplicationRecord
     validates :title,:image_url,:artist_id, presence: true
@@ -31,6 +32,22 @@ class Artwork < ApplicationRecord
     has_many :shared_viewers, through: :artwork_shares, source: :viewer 
 
     has_many :likes, dependent: :destroy, as: :likeable
+
+    def self.artworks_for_user_id(user_id)
+        Artwork.owned_artworks(user_id) + Artwork.shared_artworks(user_id)
+    end
+
+    def self.owned_artworks(user_id) 
+        self
+        .joins(:artist)
+        .where("artworks.artist_id = #{user_id}")
+    end 
+
+    def self.shared_artworks(user_id)
+        self 
+        .joins(:artwork_shares)
+        .where("artwork_shares.viewer_id = #{user_id}")
+    end 
 
     # has_many :sharers, through: :artist, source: :artwork_shares 
     # has_many :artworks_for_user_id, through: :sharers, source: :artwork 

@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   resources :users, except:[:new, :edit] do 
-    resources :artworks, only: [:index]
+    resources :artworks, only: [:index] do
+      patch 'favorite', to: 'artworks#update_favorite'
+    end 
     resources :comments, only: [:index]
   end
 
