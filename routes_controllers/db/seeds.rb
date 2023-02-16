@@ -10,7 +10,7 @@ ActiveRecord::Base.transaction do
     Artwork.destroy_all 
     ArtworkShare.destroy_all 
 
-    %w(users artworks artwork_shares).each do |table_name|
+    %w(users artworks artwork_shares comments).each do |table_name|
         ApplicationRecord.connection.reset_pk_sequence!(table_name)
     end 
 
@@ -19,10 +19,14 @@ ActiveRecord::Base.transaction do
     a = User.create!(username: "Alvin")
 
     aw1 = Artwork.create!(title: "The Peter Lisa", image_url:"arts.com/peter_lisa",artist: k  )
-    aw2 = Artwork.create!(title: "The Mona Peter", image_url:"arts.com/mona_peter",artist: f  )
+    aw2 = Artwork.create!(title: "The Mona Kim", image_url:"arts.com/mona_peter",artist: f  )
     aw3 = Artwork.create!(title: "The Alvinangelo", image_url:"arts.com/alvin",artist: a )
 
 
     aws1 = ArtworkShare.create!(viewer: f, artwork: aw1)
     aws2 = ArtworkShare.create!(viewer: k, artwork: aw2)
+
+    c1 = Comment.create!(author: a, artwork: aw1, body: "Go back to art school!")
+    c2 = Comment.create!(author: a, artwork: aw2, body: "Your art is 'UnIqUe'")
+    c3 = Comment.create!(author: f, artwork: aw3, body: "💩")
 end 

@@ -15,19 +15,20 @@ class Artwork < ApplicationRecord
 
     has_many(
         :artwork_shares,
-        class_name: :ArtworkShare,
-        foreign_key: :artwork_id,
-        primary_key: :id,
         dependent: :destroy
     )
 
+    has_many(
+        :comments,
+        dependent: :destroy,
+        inverse_of: :artwork
+      )
+
     belongs_to(
         :artist,
-        class_name: :User,
-        foreign_key: :artist_id,
-        primary_key: :id 
+        class_name: :User
     )
     has_many :shared_viewers, through: :artwork_shares, source: :viewer 
-    has_many :sharers, through: :artist, source: :artwork_shares 
-    has_many :artworks_for_user_id, through: :sharers, source: :artwork 
+    # has_many :sharers, through: :artist, source: :artwork_shares 
+    # has_many :artworks_for_user_id, through: :sharers, source: :artwork 
 end
