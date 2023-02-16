@@ -28,4 +28,6 @@ class Artwork < ApplicationRecord
         primary_key: :id 
     )
     has_many :shared_viewers, through: :artwork_shares, source: :viewer 
+    has_many :sharers, through: :artist, source: :artwork_shares 
+    has_many :artworks_for_user_id, through: :sharers, source: :artwork 
 end

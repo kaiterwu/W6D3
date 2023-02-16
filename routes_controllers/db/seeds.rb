@@ -16,10 +16,13 @@ ActiveRecord::Base.transaction do
 
     k = User.create!(username: "Kaiter")
     f = User.create!(username: "Fahim")
+    a = User.create!(username: "Alvin")
 
-    aw1 = Artwork.create!(title: "The Peter Lisa", image_url:"arts.com/peter_lisa",artist: f  )
-    aw2 = Artwork.create!(title: "The Mona Peter", image_url:"arts.com/mona_peter",artist: k  )
+    aw1 = Artwork.create!(title: "The Peter Lisa", image_url:"arts.com/peter_lisa",artist: k  )
+    aw2 = Artwork.create!(title: "The Mona Peter", image_url:"arts.com/mona_peter",artist: f  )
+    aw3 = Artwork.create!(title: "The Alvinangelo", image_url:"arts.com/alvin",artist: a )
 
-    aws1 = ArtworkShare.create!(viewer: f, artwork: aw2)
-    aws2 = ArtworkShare.create!(viewer: k, artwork: aw1)
+
+    aws1 = ArtworkShare.create!(viewer: f, artwork: aw1)
+    aws2 = ArtworkShare.create!(viewer: k, artwork: aw2)
 end 
