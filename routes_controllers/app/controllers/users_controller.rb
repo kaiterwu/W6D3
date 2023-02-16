@@ -1,8 +1,15 @@
 class UsersController < ApplicationController
     def index
         # render plain: "I'm in the index action!"
-        @users = User.all
-        render json: @users 
+        if params.has_key?(:query)
+            # @user = User.where(username:params[:query] )
+            @user = User.where("username ILIKE ?","#{params[:query]}")
+            return render json: 'NOT A USERNAME', status: :unprocessable_entity if @user.empty?
+            render json: @user 
+        else 
+            @users = User.all
+            render json: @users 
+        end
     end 
 
     def show 
