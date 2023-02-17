@@ -50,18 +50,15 @@ class ArtworksController < ApplicationController
 
   def update_favorite
     if params.has_key?(:user_id) && params.has_key?(:artwork_id)
-        @favorited = Artwork.owned_artworks(params[:user_id]).find_by(id: params[:artwork_id])
+        @favorited = Artwork.find_by(id: params[:artwork_id], artist_id: params[:user_id]) ||
+                    ArtworkShare.find_by(artwork_id: params[:artwork_id], viewer_id: params[:user_id]) 
+                    
         unless @favorited.nil? 
             @favorited.update(favorited: true)
-            return render json: 'Favorited my own!'
-        end 
-       @favorited = ArtworkShare 
-        .where('artwork_shares.artwork_id = ? AND artwork_shares.viewer_id = ?',
-            "#{params[:artwork_id]}","#{params[:user_id]}")
-        unless @favorited.empty? 
-            @favorited.update(favorited: true)
-            return render json: 'Favorited my viewed!'
-        end 
+            render json: (@favorited.is_a?(Artwork) ? 'Favorited my own!' : 'Favorited my viewed!')
+            return
+        end
+
         render json: 'Not found', status: :unprocessable_entity
     else 
         render json: 'Not valid', status: :unprocessable_entity

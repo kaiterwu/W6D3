@@ -34,20 +34,22 @@ class Artwork < ApplicationRecord
     has_many :likes, dependent: :destroy, as: :likeable
 
     def self.artworks_for_user_id(user_id)
-        Artwork.owned_artworks(user_id) + Artwork.shared_artworks(user_id)
+        # Artwork.owned_artworks(user_id) + Artwork.shared_artworks(user_id)
+        Artwork.left_outer_joins(:artwork_shares)
+                .where("artworks.id = ? OR viewer_id = ?", user_id, user_id)
     end
 
-    def self.owned_artworks(user_id) 
-        self
-        .joins(:artist)
-        .where("artworks.artist_id = #{user_id}")
-    end 
+    # def self.owned_artworks(user_id) 
+    #     self
+    #     .joins(:artist)
+    #     .where("artworks.artist_id = #{user_id}")
+    # end 
 
-    def self.shared_artworks(user_id)
-        self 
-        .joins(:artwork_shares)
-        .where("artwork_shares.viewer_id = #{user_id}")
-    end 
+    # def self.shared_artworks(user_id)
+    #     self 
+    #     .joins(:artwork_shares)
+    #     .where("artwork_shares.viewer_id = #{user_id}")
+    # end 
 
     # has_many :sharers, through: :artist, source: :artwork_shares 
     # has_many :artworks_for_user_id, through: :sharers, source: :artwork 
